@@ -21,6 +21,7 @@ try {
             core.setFailed(reason)
         })
 
+        
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
