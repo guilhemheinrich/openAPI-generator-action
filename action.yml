@@ -1,0 +1,14 @@
+name: 'openAPI-generator'
+description: 'Generate client from an openAPI spec file'
+inputs:
+  openAPI_description_path:  # id of input
+    description: 'Path to a valid openAPI spec file'
+    required: true
+  destination_path:
+    description: 'Directory path to write the generated client code'
+# outputs:
+#   time: # id of output
+#     description: 'The time we greeted you'
+runs:
+  using: 'node16'
+  main: 'index.js'

@@ -1,0 +1,86 @@
+import requests
+
+def {{operation_name}}(
+    host
+    {{#path_parameters.length}}
+    ,
+    # Paths parameters
+    {{/path_parameters.length}}
+    {{#path_parameters}}
+    {{name}}{{^last}}, {{/last}}
+    {{/path_parameters}}
+    {{#query_parameters.length}}
+    ,
+    # Query parameters
+    {{/query_parameters.length}}
+    {{#query_parameters}}
+    {{name}}{{^last}}, {{/last}}
+    {{/query_parameters}}
+
+    {{#body}}
+    {{#application/json.length}}
+    ,
+    # Body parameters
+    {{/application/json.length}}
+    {{#application/json}}
+    {{name}}{{^last}}, {{/last}}
+    {{/application/json}}
+    {{/body}}
+    {{#hasBody}}
+    ,
+    # Optional body content
+    optional_json_content = {}
+    {{/hasBody}}
+    , headers = None
+):
+    {{^path_parameters.length}}
+    final_path = "{{& path}}"
+    {{/path_parameters.length}}
+    {{#path_parameters.length}}
+    # build paramatered path
+    final_path = "{{& path}}".format(
+        {{#path_parameters}}
+        {{name}} = {{name}}{{^last}}, {{/last}}
+        {{/path_parameters}}
+        )
+    {{/path_parameters.length}}
+
+    {{#hasBody}}
+
+    {{#body.application/json.length}}
+    # Body parameters (required)
+    required_body_content = {
+    {{/body.application/json.length}}
+    {{#body.application/json}}
+        "{{name}}": {{name}}{{^last}}, {{/last}}
+    {{/body.application/json}}
+    {{#body.application/json.length}}
+    }
+    {{/body.application/json.length}}
+
+    json_content = {
+            **optional_json_content
+            {{#body.application/json.length}}
+            ,
+            **required_body_content
+            {{/body.application/json.length}}
+        }
+    {{/hasBody}}
+
+    response = requests.{{operation_type}}(
+        url = host + final_path,
+        headers = headers
+        {{#query_parameters.length}}, 
+        params = {
+            {{#query_parameters}}
+            "{{name}}": {{name}}{{^last}}, {{/last}}
+            {{/query_parameters}}
+        }
+        {{/query_parameters.length}}
+        {{#hasBody}}
+        ,
+        json = json_content
+        {{/hasBody}}
+    )
+
+    return response
