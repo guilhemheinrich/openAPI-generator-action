@@ -22722,6 +22722,7 @@ const main = {
             const openapi_config = await json_schema_ref_parser_1.default.dereference(JSON.parse(fs.readFileSync(config_path, 'utf-8')));
             const operation_generator = new OperationParser_1.default(openapi_config);
             operation_generator.build();
+            console.log(fs.readdirSync(__dirname));
             const operation_template = fs.readFileSync(`./src/templates/${targeted_language}/Operation.mustache`, 'utf-8');
             operation_generator.digest(operation_template, destination, '.py');
         }

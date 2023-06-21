@@ -18,8 +18,9 @@ const main = {
             const openapi_config: XOasObject = await $RefParser.dereference(JSON.parse(fs.readFileSync(config_path, 'utf-8'))) as XOasObject
             const operation_generator = new OperationParser(openapi_config)
             operation_generator.build()
-
-            const operation_template = fs.readFileSync(`./src/templates/${targeted_language}/Operation.mustache`, 'utf-8')
+            console.log(fs.readdirSync(__dirname))
+            console.log(fs.pathExistsSync(`${__dirname}/src/templates/${targeted_language}/Operation.mustache`))
+            const operation_template = fs.readFileSync(`${__dirname}/src/templates/${targeted_language}/Operation.mustache`, 'utf-8')
 
             operation_generator.digest(operation_template, destination, '.py')
         }
