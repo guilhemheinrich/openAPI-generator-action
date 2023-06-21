@@ -24,7 +24,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: ./
+            - uses: guilhemheinrich/openAPI-generator-action@main
               with:
                 targeted_language:  ${{ inputs.target_lang }}
                 openAPI_description_path:  ${{ inputs.openAPI_description_path }}
