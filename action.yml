@@ -1,6 +1,9 @@
 name: 'openAPI-generator'
 description: 'Generate client from an openAPI spec file'
 inputs:
+  targeted_language:
+    description: 'Targeted client language'
+    required: true
   openAPI_description_path:  # id of input
     description: 'Path to a valid openAPI spec file'
     required: true

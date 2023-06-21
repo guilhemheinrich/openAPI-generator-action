@@ -13,7 +13,7 @@ try {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     console.log(`The event payload: ${payload}`);
 
-    main.init(openAPI_description_path, destination_path)
+    main.init(openAPI_description_path, destination_path, 'python')
         .then(
             
         )

@@ -22660,7 +22660,7 @@ try {
     console.log(`Resolved openAPI description file path ${path_1.default.resolve(destination_path)}!`);
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
-    index_1.default.init(openAPI_description_path, destination_path)
+    index_1.default.init(openAPI_description_path, destination_path, 'python')
         .then()
         .catch((reason) => {
         core.setFailed(reason);
@@ -22710,14 +22710,20 @@ const core = __importStar(__nccwpck_require__(6458));
 const json_schema_ref_parser_1 = __importDefault(__nccwpck_require__(1636));
 const fs = __importStar(__nccwpck_require__(1447));
 const OperationParser_1 = __importDefault(__nccwpck_require__(3708));
+const languages = [
+    'python',
+    'R'
+];
 const main = {
-    async init(config_path, destination) {
+    async init(config_path, destination, targeted_language) {
+        if (!languages.includes(targeted_language))
+            core.setFailed(`${targeted_language} is not a valid language.\n Valid languages are:\n  ${languages.join('\n')}`);
         try {
             const openapi_config = await json_schema_ref_parser_1.default.dereference(JSON.parse(fs.readFileSync(config_path, 'utf-8')));
             const operation_generator = new OperationParser_1.default(openapi_config);
             operation_generator.build();
-            const python_template = fs.readFileSync('./src/templates/python/Operation.mustache', 'utf-8');
-            operation_generator.digest(python_template, destination, '.py');
+            const operation_template = fs.readFileSync(`./src/templates/${targeted_language}/Operation.mustache`, 'utf-8');
+            operation_generator.digest(operation_template, destination, '.py');
         }
         catch (err) {
             if (err instanceof Error)
