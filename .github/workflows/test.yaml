@@ -1,0 +1,32 @@
+name: test
+
+permissions:
+    contents: write
+
+on:
+    workflow_dispatch:
+        inputs:
+            target_lang:
+                description: 'targeted client language'
+                required: true
+                type: choice
+                options:
+                    - R
+                    - python
+            openAPI_description_path:
+                description: 'Path to the openAPI description file'
+                required: false
+            destination_path:
+                description: 'Path of the generated client'
+                required: false
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: guilhemheinrich/test-autogen-appeau@main
+              with:
+                targeted_language:  ${{ inputs.target_lang }}
+                openAPI_description_path:  ${{ inputs.openAPI_description_path }}
+                destination_path:  ${{ inputs.destination_path }}
+
