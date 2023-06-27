@@ -22,7 +22,16 @@ const main = {
             console.log(fs.pathExistsSync(`${__dirname}/src/templates/${targeted_language}/Operation.mustache`))
             const operation_template = fs.readFileSync(`${__dirname}/src/templates/${targeted_language}/Operation.mustache`, 'utf-8')
             
-            operation_generator.digest(operation_template, destination, '.py')
+            let extension = '.txt'
+            switch (targeted_language) {
+                case 'python':
+                    extension = '.py';
+                    break;
+                case 'R':
+                    extension = '.R';
+                    break;
+            }
+            operation_generator.digest(operation_template, destination, extension)
         }
         catch (err) {
             if (err instanceof Error) core.setFailed(err.message)
