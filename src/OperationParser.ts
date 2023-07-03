@@ -140,7 +140,6 @@ export default class OperationParser {
                     nested_dictionary.operation_type = key
                     this.operationLoop(operation, nested_dictionary)
                     this.operation_dictionary.push(nested_dictionary)
-                    console.log(nested_dictionary)
                 }
 
             }
