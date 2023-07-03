@@ -5,6 +5,7 @@ import * as fs from 'fs-extra'
 import lastify from './mustache_lastify'
 
 import PythonOperation from './templates/python/Operation';
+import ROperation from './templates/R/Operation';
 import { OperationTemplate } from './templates/OperationTemplate';
 
 
@@ -154,6 +155,8 @@ export default class OperationParser {
                 template = PythonOperation
                 break;
             case 'R':
+                template = ROperation
+                break;
             default:
                 throw('No template found')
         }
