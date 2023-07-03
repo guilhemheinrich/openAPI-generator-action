@@ -4,15 +4,36 @@ import path from 'path'
 import * as fs from 'fs-extra'
 import lastify from './mustache_lastify'
 
+import PythonOperation from './templates/python/Operation';
+import { OperationTemplate } from './templates/OperationTemplate';
+
+
+export const languages = [
+    'python',
+    'R'
+] as const
+
+export function build_extension(lang: typeof languages[number]) {
+    switch(lang) {
+        case 'python':
+            return '.py'
+        case 'R':
+            return '.R'
+        default:
+            return ''
+    }
+}
+
+
 const operation_type = ['put', 'post', 'delete', 'get', 'patch']
 type OperationType = typeof operation_type[number]
 
-interface ParameterI {
+export interface ParameterI {
     name: string
     required: boolean
 }
 
-interface Mustache_DictionaryI {
+export interface Mustache_DictionaryI {
     operation_name: string
     operation_type: OperationType
     isPost?: boolean
@@ -23,10 +44,6 @@ interface Mustache_DictionaryI {
     cookie_parameters?: ParameterI[]
     header_parameters?: ParameterI[]
     body?: {[content_type: string] : ParameterI[]}
-}
-
-interface Mustache_LogicI {
-    hasBody?: boolean
 }
 
 export default class OperationParser {
@@ -130,23 +147,21 @@ export default class OperationParser {
         }
     }
 
-    digest(mustache_template: string, output_folder: string, extension: string) {
+    digest(lang: typeof languages[number], output_folder: string) {
         fs.ensureDirSync(output_folder)
+        let template: OperationTemplate
+        switch (lang) {
+            case 'python':
+                template = PythonOperation
+                break;
+            case 'R':
+            default:
+                throw('No template found')
+        }
         for (const view of this.operation_dictionary) {
-            // Complete logic needed
-            const added_logic:Mustache_DictionaryI & Mustache_LogicI = JSON.parse(JSON.stringify(view))
-            added_logic.hasBody = ['put', 'post', 'patch'].includes(view.operation_type)
-            const output = mustache.render(mustache_template, lastify(added_logic))
-            fs.writeFileSync(path.resolve(output_folder, view.operation_name + extension), output, { encoding: "utf-8" })
+            const output = template.generate(view)
+            fs.writeFileSync(path.resolve(output_folder, view.operation_name + build_extension(lang)), output, { encoding: "utf-8" })
         }
     }
 
-    // Required for beeing able to use the syntax:
-    // from my_client
-    // my_client.api_action(...)
-    add_python_init(mustache_template: string,output_folder: string) {
-        fs.ensureDirSync(output_folder)
-        const output = mustache.render(mustache_template, this.operation_dictionary)
-        fs.writeFileSync(path.resolve(output_folder, '__init__.py'), output, { encoding: "utf-8" })
-    }
 }
