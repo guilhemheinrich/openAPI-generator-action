@@ -27,17 +27,17 @@ ${data.operation_name} <- function(
     ) {
         ${data.path_parameters ? `final_path <- glue::glue("${data.path}",
             ${data.path_parameters.map((parameter) => `${parameter.name} = ${parameter.name}`).join(', ')}
-        )` : 'final_path <- "${data.path}"'}
+        )` : `final_path <- "${data.path}"`}
         
         ${['put', 'post', 'patch'].includes(data.operation_type) ? `${data.body && data.body['application/json'] ? `# Body parameters (required)
         required_body_content <- list(
-            ${data.body['application/json'].map((parameter) => `"${parameter.name}": ${parameter.name}`).join(', ')}
+            ${data.body['application/json'].map((parameter) => `"${parameter.name}" = ${parameter.name}`).join(', ')}
         )` : '' }
 
         json_content <- c(optional_json_content${ data.body && data.body['application/json'].length > 0 ? `, required_body_content` : ''})         
         ` : ''}
         
-        response <- httr::.${data.operation_type.toUpperCase()}(
+        response <- httr::${data.operation_type.toUpperCase()}(
             url = paste0(host, final_path),
             headers = headers${data.query_parameters && data.query_parameters.length > 0 ? `,
             query = list(
