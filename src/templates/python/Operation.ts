@@ -65,7 +65,7 @@ def ${data.operation_name}(
     
     ${['put', 'post', 'patch'].includes(data.operation_type) ? `${data.body && data.body['application/json'] ? `# Body parameters (required)
     required_body_content = {
-        ${data.body['application/json'].map((parameter) => `"${parameter.name}": ${prefixed(parameter.parsedName(PYTHON_PARSED_PARAMETERS_FUNCTION), 'body')}}`).join(', ')}
+        ${data.body['application/json'].map((parameter) => `"${parameter.name}": ${prefixed(parameter.parsedName(PYTHON_PARSED_PARAMETERS_FUNCTION), 'body')}`).join(', ')}
     }` : ''}
     json_content = {
         **optional_json_content${data.body && data.body['application/json'].length > 0 ? `,
